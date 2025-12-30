@@ -21,7 +21,7 @@ uvx --version
 
 ### Create Python Virtual Environment
 ```bash
-cd ~/fyp-prep
+cd ~/fyp-prep/FYP-Prep
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
