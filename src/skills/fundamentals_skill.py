@@ -1,7 +1,7 @@
 # src/skills/fundamentals_skill.py
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from src.tools.sql_tool_mcp import McpSqliteReadOnlyTool
 from src.graphrag.retrieve import RetrieveConfig, graphrag_retrieve
@@ -12,6 +12,7 @@ def fundamentals_skill(
     sql_tool: McpSqliteReadOnlyTool,
     graphrag_cfg: RetrieveConfig,
     focus: str = "services",
+    api_key: Optional[str] = None,
 ) -> Dict[str, Any]:
     # --- Numbers (MCP) ---
     # Keep it minimal: reuse your Step 1 idea (period list + line items)
@@ -26,8 +27,8 @@ def fundamentals_skill(
     periods = [r[0] for r in periods_res.rows]  # one column: period_end
 
     wanted = ["Total Revenue", "Net Income", "Diluted EPS", "Basic EPS", "Free Cash Flow"]
-    periods_in = ", ".join([f"'{p}'" for p in periods])
-    items_in = ", ".join([f"'{x}'" for x in wanted])
+    # periods_in = ", ".join([f"'{p}'" for p in periods]) # Unused
+    # items_in = ", ".join([f"'{x}'" for x in wanted])   # Unused
 
     items_res = sql_tool.read_query(f"""
         SELECT period_end, line_item, value, ingested_at
@@ -55,12 +56,46 @@ def fundamentals_skill(
 
     # --- Text evidence (GraphRAG) ---
     ep = graphrag_retrieve(f"{ticker} {focus} growth drivers", graphrag_cfg)
+    seed_chunks = ep.get("seed_chunks", [])[:5]
 
-    # Simple POC: take top seed chunks as drivers, expanded chunks as risks/extra
-    drivers = [
-        {"text": c.get("text", "")[:220], "evidence_ids": [c["evidence_id"]]}
-        for c in ep.get("seed_chunks", [])[:4]
-    ]
+    drivers = []
+    
+    # Try Perplexity Generation if key provided
+    if api_key and seed_chunks:
+        try:
+            from src.llm.perplexity_client import call_perplexity
+            
+            context_str = "\n\n".join([f"Chunk {i+1} (ID: {c['evidence_id']}): {c['text']}" for i, c in enumerate(seed_chunks)])
+            
+            prompt = f"""
+            Based on the following text chunks from {ticker}'s filings, identify 3-5 key growth drivers.
+            Return ONLY a bulleted list of drivers. Do not include introductory text.
+            
+            Context:
+            {context_str}
+            """
+            
+            resp = call_perplexity(api_key, [{"role": "user", "content": prompt}])
+            
+            # Parse lines
+            driver_lines = [line.strip().lstrip("- ").lstrip("* ") for line in resp.split("\n") if line.strip()]
+            
+            # Attribute all used chunks to each driver (Section Citation pattern)
+            all_ids = [c["evidence_id"] for c in seed_chunks]
+            drivers = [{"text": d, "evidence_ids": all_ids} for d in driver_lines]
+            
+        except Exception as e:
+            print(f"Perplexity API failed: {e}")
+            # Fallback will happen below if drivers is empty
+            pass
+
+    # Fallback to truncation if no key or failure
+    if not drivers:
+        drivers = [
+            {"text": c.get("text", "")[:220], "evidence_ids": [c["evidence_id"]]}
+            for c in seed_chunks
+        ]
+
     related_evidence = [
         {"text": c.get("text", "")[:220], "evidence_ids": [c["evidence_id"]]}
         for c in ep.get("expanded_chunks", [])[:3]
