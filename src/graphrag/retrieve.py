@@ -62,7 +62,11 @@ def graphrag_retrieve(query: str, cfg: RetrieveConfig) -> Dict[str, Any]:
     doc_years: Dict[str, int] = {}
 
     for h in hits:
-        payload = h.payload or {}
+        payload = h.payload
+        # SAFETY: Ensure payload is actually a dict before accessing .get()
+        if not isinstance(payload, dict):
+            payload = {}
+            
         chunk_id = payload.get("chunk_id")
         if not chunk_id:
             continue
@@ -135,7 +139,11 @@ def graphrag_retrieve(query: str, cfg: RetrieveConfig) -> Dict[str, Any]:
             with_payload=True,
         )
         for p in pts:
-            payload = p.payload or {}
+            payload = p.payload
+            # SAFETY: Ensure payload is actually a dict
+            if not isinstance(payload, dict):
+                payload = {}
+
             chunk_id2 = payload.get("chunk_id")
             if not chunk_id2:
                 continue
