@@ -33,8 +33,13 @@ def _compute_financial_metrics(rows: List[Any], periods: List[str]) -> Dict[str,
     df["value"] = pd.to_numeric(df["value"], errors="coerce").fillna(0.0)
     df["period_end"] = pd.to_datetime(df["period_end"])
     
+    # FIX: Deduplicate before pivoting to avoid summing duplicates (e.g. same data ingested twice)
+    # We sort by ingested_at desc to keep the latest version if there are duplicates
+    df = df.sort_values("ingested_at", ascending=False).drop_duplicates(subset=["period_end", "line_item"])
+
     # Pivot to: Index=Date, Cols=Line Items
-    pivot = df.pivot_table(index="period_end", columns="line_item", values="value", aggfunc="sum").sort_index(ascending=False)
+    # aggfunc='sum' is safe now because we deduped, but 'max' is safer if duplicates persist
+    pivot = df.pivot_table(index="period_end", columns="line_item", values="value", aggfunc="max").sort_index(ascending=False)
     
     # Ensure we have essential columns
     required = ["Total Revenue", "Net Income", "Diluted EPS", "Free Cash Flow"]
@@ -81,11 +86,8 @@ def _compute_financial_metrics(rows: List[Any], periods: List[str]) -> Dict[str,
             eps_growth_yoy = (e1 - e0) / abs(e0)
 
     # Convert pivot to pure dict with string keys for JSON serialization
-    # 1. Reset index to make 'period_end' a column
     pivot_reset = pivot.reset_index()
-    # 2. Convert timestamp to string
     pivot_reset["period_end"] = pivot_reset["period_end"].dt.strftime("%Y-%m-%d")
-    # 3. Set index back for to_dict(orient='index')
     pivot_reset.set_index("period_end", inplace=True)
     raw_pivot_dict = pivot_reset.head(8).to_dict(orient="index")
 
