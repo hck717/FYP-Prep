@@ -1,15 +1,22 @@
+# src/llm/perplexity_client.py
 import os
+import json
+from typing import List, Dict, Any
 from openai import OpenAI
 
-def call_perplexity(api_key: str, messages: list, model: str = "llama-3.1-sonar-large-128k-online") -> str:
+# Updated to a valid model as of late 2025/early 2026
+MODEL_NAME = "sonar-pro"
+
+def call_perplexity(api_key: str, messages: List[Dict[str, str]]) -> str:
     """
-    Calls Perplexity API using the OpenAI-compatible client.
+    Call Perplexity API using OpenAI-compatible client.
     """
     client = OpenAI(api_key=api_key, base_url="https://api.perplexity.ai")
     
     response = client.chat.completions.create(
-        model=model,
+        model=MODEL_NAME,
         messages=messages,
+        temperature=0.0,
     )
     
     return response.choices[0].message.content
