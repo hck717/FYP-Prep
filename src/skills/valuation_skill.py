@@ -23,7 +23,7 @@ def valuation_skill(
 
     eps = sql_tool.read_query(f"""
         SELECT period_end, value, ingested_at
-        FROM fundamentals_quarterly
+        FROM fundamentals
         WHERE ticker='{ticker}'
           AND line_item='Diluted EPS'
         ORDER BY period_end DESC
