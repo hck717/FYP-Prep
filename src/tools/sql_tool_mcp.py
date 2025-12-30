@@ -168,10 +168,6 @@ class McpSqliteReadOnlyTool:
         async with stdio_client(server) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
-                await session.call_tool("read_query", {"query": safe_sql})
-                # Note: The original code called call_tool twice or returned differently?
-                # Re-aligning with the code I downloaded in previous steps.
-                # Actually, the file I downloaded had:
                 raw = await session.call_tool("read_query", {"query": safe_sql})
 
         # Extract data
