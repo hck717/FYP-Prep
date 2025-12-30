@@ -1,4 +1,3 @@
-
 import json
 import streamlit as st
 from src.graphrag.retrieve import RetrieveConfig
@@ -26,6 +25,9 @@ with st.sidebar:
     
     st.subheader("MCP Config")
     db_path = st.text_input("DB Path", "research.db")
+
+    st.subheader("LLM Config")
+    pplx_api_key = st.text_input("Perplexity API Key", type="password", help="Optional. Required for synthesis/reasoning.")
 
     if st.button("Reset Session"):
         st.session_state.result = None
@@ -57,7 +59,7 @@ def run_analysis():
     with st.spinner(f"Running Agentic Workflow for {ticker}..."):
         # 2. Run Orchestrator
         try:
-            res = run_orchestrator(ticker, sql_tool, graph_cfg)
+            res = run_orchestrator(ticker, sql_tool, graph_cfg, api_key=pplx_api_key)
             st.session_state.result = res
             st.success("Analysis Complete!")
         except Exception as e:
