@@ -80,23 +80,32 @@ def _compute_financial_metrics(rows: List[Any], periods: List[str]) -> Dict[str,
         if e0 != 0:
             eps_growth_yoy = (e1 - e0) / abs(e0)
 
+    # Convert pivot to pure dict with string keys for JSON serialization
+    # 1. Reset index to make 'period_end' a column
+    pivot_reset = pivot.reset_index()
+    # 2. Convert timestamp to string
+    pivot_reset["period_end"] = pivot_reset["period_end"].dt.strftime("%Y-%m-%d")
+    # 3. Set index back for to_dict(orient='index')
+    pivot_reset.set_index("period_end", inplace=True)
+    raw_pivot_dict = pivot_reset.head(8).to_dict(orient="index")
+
     return {
         "ttm": {
-            "revenue": ttm_revenue,
-            "net_income": ttm_ni,
-            "fcf": ttm_fcf,
-            "eps": ttm_eps
+            "revenue": float(ttm_revenue),
+            "net_income": float(ttm_ni),
+            "fcf": float(ttm_fcf),
+            "eps": float(ttm_eps)
         },
         "margins": {
-            "net_margin": net_margin,
-            "fcf_margin": fcf_margin
+            "net_margin": float(net_margin),
+            "fcf_margin": float(fcf_margin)
         },
         "growth": {
-            "revenue_yoy": rev_growth_yoy,
-            "eps_yoy": eps_growth_yoy
+            "revenue_yoy": float(rev_growth_yoy),
+            "eps_yoy": float(eps_growth_yoy)
         },
         "latest_quarter_date": pivot.index[0].strftime("%Y-%m-%d") if not pivot.empty else None,
-        "raw_pivot": pivot.head(8).to_dict(orient="index") # For display table
+        "raw_pivot": raw_pivot_dict
     }
 
 def fundamentals_skill(
@@ -125,10 +134,9 @@ def fundamentals_skill(
     # Re-structure for the UI table
     # Convert dataframe-like dict back to the "periods/panel" format agent.py expects
     raw_pivot = metrics.get("raw_pivot", {})
-    periods = list(raw_pivot.keys()) # Dates
-    # Format dates to strings if needed, though they are keys in the dict
-    panel = {str(k).split(" ")[0]: v for k, v in raw_pivot.items()}
-    periods_str = list(panel.keys())
+    # periods keys are already strings now
+    periods_str = list(raw_pivot.keys())
+    panel = raw_pivot # already in correct format {date: {col: val}}
 
     financials_summary = {
         "periods": periods_str,
