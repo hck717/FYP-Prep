@@ -1,31 +1,62 @@
 # FYP-Prep: Agentic Equity Research with MCP & GraphRAG
 
-This project implements an Agentic RAG system for Equity Research (ER). It uses **Model Context Protocol (MCP)** to securely access internal financial data (SQLite) and **GraphRAG** (Neo4j + Qdrant) to retrieve structural text evidence. A central **Orchestrator** plans, executes, and verifies the research note generation.
+This project implements an **Agentic RAG system** for Equity Research (ER). It mimics the workflow of a professional analyst by orchestrating specialized "skills" to gather evidence, perform reasoning, and generate verified investment insights.
 
-## 🧠 How It Works (Architecture)
+It leverages **Model Context Protocol (MCP)** for secure access to structured financial data (SQLite) and **GraphRAG** (Neo4j + Qdrant) for retrieving connected textual evidence.
 
-This system mimics the workflow of a professional human analyst but automates the data gathering and synthesis steps. It operates in three distinct layers:
+---
 
-### 1. The "Analyst Brain" (Orchestrator & LLM)
-- **Role**: Plans the research note structure and synthesizes insights.
-- **Technology**: 
-  - **Perplexity API** (Cloud): Acts as the senior analyst brain. We use "Role Prompting" to give it a Wall Street persona (e.g., "You are a Senior Equity Research Analyst"). It takes raw facts and writes the professional narrative.
-  - **Orchestrator** (Local Python): The project manager. It breaks the user request into tasks (e.g., "Get Fundamentals", "Get Valuation"), calls the right tools, and ensures the job gets done.
+## 🧠 System Architecture
 
-### 2. The "Fact Checkers" (Data Plane)
-We strictly separate **Numbers** from **Text** to prevent "hallucinations" (AI making up numbers).
-- **Financials (MCP SQLite)**: 
-  - Uses the **Model Context Protocol (MCP)** to query a local SQLite database (`research.db`). 
-  - This ensures that when the agent asks for "Apple's 2023 Revenue," it gets the exact database value, not a guess.
-- **Text Evidence (GraphRAG)**:
-  - Uses **Qdrant** (Vector Search) to find relevant paragraphs in 10-K filings.
-  - Uses **Neo4j** (Graph Database) to find hidden connections (e.g., "Supplier Relationship" or "Risk Factors").
-  - Returns "Evidence Packs" containing raw text chunks and their unique IDs.
+The system is designed as a modular **Agentic Orchestrator** that manages two specialized skills, powered by distinct data pipelines.
 
-### 3. The "Verifier" (Quality Control)
-- Before showing you the report, the system runs a **Verification Step**.
-- It checks that every claim in the final text cites a specific **Evidence ID** (e.g., `[Ids: chunk_123]`).
-- If the AI writes something without a source, the Verifier flags it.
+### 1. The Orchestrator (The "Analyst Brain")
+- **Role**: Project Manager & Editor.
+- **Responsibility**: 
+  - Receives the user request (e.g., "Analyze AAPL").
+  - **Plans** the report structure (e.g., "Step 1: Fundamentals", "Step 2: Valuation").
+  - **Delegates** tasks to specific Skills.
+  - **Verifies** quality (checks that every claim cites valid Evidence IDs).
+  - **Synthesizes** final output using **Perplexity API** with a "Senior Analyst" persona.
+
+### 2. The Skills (The "Specialists")
+The Orchestrator calls these Python modules to perform domain-specific work:
+- **Skill A: Fundamentals**: 
+  - *Task:* Analyze growth drivers, revenue mix, and risks.
+  - *Logic:* Triangulates quantitative trends (SQL) with qualitative context (Text).
+  - *Advanced:* Uses "Chain-of-Thought" prompting to perform sanity checks (e.g., "Do numbers match the narrative?").
+- **Skill B: Valuation**:
+  - *Task:* Construct valuation ranges (Base/Bear/Bull).
+  - *Logic:* Pulls latest price/EPS data and applies multiple valuation methods (PE, DCF proxy).
+
+### 3. The Data Plane (The "Fact Checkers")
+We strictly separate **Structured** vs. **Unstructured** data to eliminate hallucinations.
+
+| Component | Technology | Role | Example Query |
+| :--- | :--- | :--- | :--- |
+| **Structured Data** | **MCP + SQLite** | The source of truth for **Numbers**. Read-only access ensures data integrity. | "Get AAPL 2024 Q3 Revenue" |
+| **Unstructured Data** | **GraphRAG** (Neo4j + Qdrant) | The source of truth for **Narrative**. Combines **Vector Search** (semantic meaning) with **Graph Search** (relationships). | "Find 'Service Revenue' and its connected 'Risk Factors'" |
+
+---
+
+## 🚀 Key Technologies Explained
+
+### What is "Agentic RAG"?
+Standard RAG just "retrieves and summarizes." **Agentic RAG** adds a reasoning layer:
+1. **Planning**: It doesn't just answer; it creates a multi-step plan.
+2. **Tool Use**: It actively selects which tool (SQL vs. Vector DB) to use for which sub-problem.
+3. **Verification**: It critiques its own output ("Did I cite my sources?") before showing it to you.
+
+### What is "GraphRAG"?
+Traditional RAG retrieves text based on keyword similarity. **GraphRAG** enhances this by understanding connections:
+- *Vector*: Finds paragraphs talking about "Chips."
+- *Graph*: Knows that "Chips" are connected to "TSMC" (Supplier) and "Taiwan" (Geopolitical Risk).
+- *Benefit*: It retrieves **context**, not just keywords, leading to deeper insights.
+
+### What is "MCP"?
+The **Model Context Protocol (MCP)** is an open standard that allows AI agents to connect to data sources safely.
+- Instead of hard-coding SQL credentials into the AI, we run a secure **MCP Server**.
+- The AI uses a standardized API to ask for data, and the Server ensures it only sees what it's allowed to see (Read-Only).
 
 ---
 
@@ -34,6 +65,7 @@ We strictly separate **Numbers** from **Text** to prevent "hallucinations" (AI m
 - Python 3.12+
 - Docker (for Neo4j)
 - `uv` (for running MCP servers)
+- **Perplexity API Key** (for the reasoning/generation layer)
 
 ---
 
@@ -128,6 +160,13 @@ source .venv/bin/activate
 python -m src.scripts.step4_run_skills_poc
 ```
 
+### Refine "Senior Analyst" Behavior
+To improve the quality of insights, you can save good outputs as "exemplars." The system will use these to fine-tune its future responses via few-shot prompting.
+```bash
+# Example: Save your best output to a file, then run:
+python -m src.scripts.add_fundamentals_exemplar --focus "services" --ticker "AAPL" --drivers-file artifacts/good_drivers.json
+```
+
 ---
 
 ## 5. Application Layer: 1-Click Demo
@@ -147,4 +186,5 @@ Access the app at `http://localhost:8501`.
 - `src/graphrag/`: Retrieval logic (`retrieve.py`)
 - `src/skills/`: Domain logic (`fundamentals.py`, `valuation.py`)
 - `src/orchestrator/`: Agent logic (`agent.py`)
+- `src/llm/`: Perplexity client & Exemplar management
 - `streamlit_app_v2.py`: Main UI entry point
