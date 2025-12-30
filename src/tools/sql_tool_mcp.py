@@ -24,6 +24,7 @@ FORBIDDEN = re.compile(
 # Default allowlisted tables (matching your schema)
 ALLOWED_TABLES = {
     "prices_daily",
+    "fundamentals",
     "fundamentals_quarterly",
     "ratios_ttm",
     "events",
@@ -167,6 +168,10 @@ class McpSqliteReadOnlyTool:
         async with stdio_client(server) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
+                await session.call_tool("read_query", {"query": safe_sql})
+                # Note: The original code called call_tool twice or returned differently?
+                # Re-aligning with the code I downloaded in previous steps.
+                # Actually, the file I downloaded had:
                 raw = await session.call_tool("read_query", {"query": safe_sql})
 
         # Extract data
@@ -222,7 +227,7 @@ def test_sql_tool():
     # Test 2: Query AAPL fundamentals
     result2 = tool.read_query("""
         SELECT period_end, line_item, value
-        FROM fundamentals_quarterly
+        FROM fundamentals
         WHERE ticker='AAPL'
         ORDER BY period_end DESC
         LIMIT 10
