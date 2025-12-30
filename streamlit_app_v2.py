@@ -1,4 +1,5 @@
 import json
+import traceback
 import streamlit as st
 from src.graphrag.retrieve import RetrieveConfig
 from src.orchestrator.agent import run_orchestrator
@@ -64,6 +65,8 @@ def run_analysis():
             st.success("Analysis Complete!")
         except Exception as e:
             st.error(f"Error running analysis: {e}")
+            with st.expander("Detailed Traceback", expanded=True):
+                st.code(traceback.format_exc())
 
 # --- UI Layout ---
 
