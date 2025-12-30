@@ -59,7 +59,8 @@ def executor(
         
         if step.skill == "fundamentals":
             # Pass api_key to support Perplexity-based synthesis
-            out = fundamentals_skill(ticker, sql_tool, graph_cfg, focus=step.focus or "general", api_key=api_key)
+            # FIX: Use graphrag_cfg (function arg) instead of undefined graph_cfg
+            out = fundamentals_skill(ticker, sql_tool, graphrag_cfg, focus=step.focus or "general", api_key=api_key)
             results["fundamentals"] = out
         
         elif step.skill == "valuation":
