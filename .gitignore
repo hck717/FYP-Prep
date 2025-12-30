@@ -1,0 +1,23 @@
+
+# Python internals
+__pycache__/
+*.pyc
+
+# Virtual Environment (Thousands of files here!)
+.venv/
+venv/
+env/
+
+# Mac OS
+.DS_Store
+
+# Project Data & Artifacts (Generated locally)
+research.db
+artifacts/
+data/
+
+# Environment variables (Secrets)
+.env
+
+# Logs
+*.log
