@@ -59,7 +59,7 @@ def executor(
         
         if step.skill == "fundamentals":
             # Pass api_key to support Perplexity-based synthesis
-            out = fundamentals_skill(ticker, sql_tool, graphrag_cfg, focus=step.focus or "general", api_key=api_key)
+            out = fundamentals_skill(ticker, sql_tool, graph_cfg, focus=step.focus or "general", api_key=api_key)
             results["fundamentals"] = out
         
         elif step.skill == "valuation":
@@ -82,7 +82,7 @@ def verifier(data: Dict[str, Any]) -> Dict[str, Any]:
 
     # Check Fundamentals
     fund = data.get("fundamentals", {})
-    if fund:
+    if isinstance(fund, dict):
         # Check SQL evidence
         sql_ids = fund.get("financials_summary", {}).get("sql_evidence_ids", [])
         if not sql_ids:
@@ -100,7 +100,7 @@ def verifier(data: Dict[str, Any]) -> Dict[str, Any]:
 
     # Check Valuation
     val = data.get("valuation", {})
-    if val:
+    if isinstance(val, dict):
         # Check inputs evidence
         inp_ids = val.get("inputs", {}).get("sql_evidence_ids", [])
         if not inp_ids:
@@ -133,6 +133,10 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
     fund = data.get("fundamentals", {})
     val = data.get("valuation", {})
     
+    # SAFETY: Ensure inputs are dicts
+    if not isinstance(fund, dict): fund = {}
+    if not isinstance(val, dict): val = {}
+    
     md = f"# Equity Research Note: {ticker}\n\n"
     
     # Fundamentals Section
@@ -154,8 +158,8 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
         for item in items:
             row_vals = []
             for p in periods[:4]:
-                val = panel.get(p, {}).get(item, "-")
-                row_vals.append(str(val))
+                val_num = panel.get(p, {}).get(item, "-")
+                row_vals.append(str(val_num))
             md += f"| {item} | " + " | ".join(row_vals) + " |\n"
         
         sql_ids = summary.get("sql_evidence_ids", [])
