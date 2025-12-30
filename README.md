@@ -188,3 +188,10 @@ Access the app at `http://localhost:8501`.
 - `src/orchestrator/`: Agent logic (`agent.py`)
 - `src/llm/`: Perplexity client & Exemplar management
 - `streamlit_app_v2.py`: Main UI entry point
+
+---
+
+## Acknowledgements
+
+This architecture is inspired by Neo4j's developer guide on **GraphRAG and Agentic Architecture**.  
+Reference: [GraphRAG and Agentic Architecture with NeoConverse](https://neo4j.com/blog/developer/graphrag-and-agentic-architecture-with-neoconverse/)
