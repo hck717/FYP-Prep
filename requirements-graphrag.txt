@@ -1,0 +1,4 @@
+qdrant-client>=1.9
+neo4j>=5.0
+sentence-transformers>=3.0
+pandas>=2.1

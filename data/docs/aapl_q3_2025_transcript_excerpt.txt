@@ -1,0 +1,15 @@
+SOURCE: Earnings call transcript (secondary source)
+URL: https://www.investing.com/news/transcripts/earnings-call-transcript-apple-beats-q3-2025-forecasts-stock-dips-93CH-4164767
+
+GOAL: Capture management commentary on Services growth drivers.
+
+PASTE SECTION A (Services highlights):
+Services revenue was $27,400,000,000 up 13% year over year and an all time record. We saw strength across the world with double digit growth in the majority of our markets. Company gross margin was 46.5%, at the high end of our guidance range and down 60 basis points sequentially, primarily driven by approximately $800,000,000 in tariff related costs Tim mentioned earlier. Products gross margin was 34.5%, down 140 basis points sequentially, driven by mix and tariff related costs, partly offset by cost savings. Services gross margin was 75.6%, down 10 basis points sequentially.
+
+Operating expenses landed at $15,500,000,000 up 8% year over year. This strong business performance led to June records for both net income at $23,400,000,000 and diluted earnings per share of 1.57 which was up 12% year over year. Operating cash flow was also strong at $27,900,000,000 Now I’m going to provide some more details for each of our revenue categories. IPhone revenue was $44,600,000,000 up 13% year over year driven by the iPhone 16 family. As Tim noted, we saw iPhone growth in every geographic segment and double digit growth in many emerging markets.
+
+The iPhone active installed base grew to an all time high in total and in every geographic segment, and we reached a June record for upgraders. According to a recent survey from World Panel, formerly of Kantar, iPhone was a top selling model in The U. S, urban China, The U. K, Australia, and Japan during the June. And we continue to see very high levels of customer satisfaction in The U.
+
+We saw a sequential acceleration across a majority of the categories, including cloud services where we reached an all time revenue record driven by the year over year growth of iCloud paying accounts. We saw strong momentum during the June, and the growth of our installed base of active devices gives us great opportunities for the future. Customer engagement across our services offerings also continued to grow. Both transacting and paid accounts reached new all time highs, with paid accounts growing double digits year over year. Paid subscriptions also grew double digits.
+
+We have well over 1,000,000,000 paid subscriptions across the services on our platform. We continue to improve the quality and breadth of our service offerings, from the new Apple Games app to a continued expansion of tap to pay and Wallet. Turning to enterprise, organizations are continuing to invest in Apple products to drive employee innovation and productivity. With companies like PayPal and Roche deploying more Macs for their workforce, we had the best June ever for Mac and Enterprise. In Thailand, Siam Commercial Bank, one of the largest Thai banks, has deployed thousands of iPads across their branches to enhance the quality and efficiency of their banking operations from loan services to wealth management.

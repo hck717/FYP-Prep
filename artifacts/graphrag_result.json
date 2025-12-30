@@ -1,0 +1,664 @@
+{
+  "query": "Apple services growth drivers",
+  "seed_chunks": [
+    {
+      "evidence_id": "seed:aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "score": 0.6594916098287575,
+      "text": "SOURCE: Earnings call transcript (secondary source) URL: https://www.investing.com/news/transcripts/earnings-call-transcript-apple-beats-q3-2025-forecasts-stock-dips-93CH-4164767 GOAL: Capture management commentary on Services growth drivers. PASTE SECTION A (Services highlights): Services revenue was $27,400,000,000 up 13% year over year and an all time record. We saw strength across the world with double digit growth in the majority of our markets. Company gross margin was 46.5%, at the high end of our guidance range and down 60 basis points sequentially, primarily driven by approximately $800,000,000 in tariff related costs Tim mentioned earlier. Products gross margin was 34.5%, down 140 basis points sequentially, driven by mix and tariff related costs, partly offset by cost savings. Services gross margin was 75.6%, down 10 basis points sequentially. Operating expenses landed at $15,5"
+    },
+    {
+      "evidence_id": "seed:aapl_10k_2024_excerpt:0:7e24343194",
+      "chunk_id": "aapl_10k_2024_excerpt:0:7e24343194",
+      "doc_id": "aapl_10k_2024_excerpt",
+      "source_year": 2024,
+      "score": 0.5185207548383084,
+      "text": "SOURCE: SEC EDGAR Apple Inc. Form 10-K (FY ended 2024-09-28) URL: https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm GOAL: Provide internal evidence about Services + key risks. PASTE SECTION A (Business -> Services): Services Advertising The Company\u2019s advertising services include third-party licensing arrangements and the Company\u2019s own advertising platforms. AppleCare The Company offers a portfolio of fee-based service and support products under the AppleCare\u00ae brand. The offerings provide priority access to Apple technical support, access to the global Apple authorized service network for repair and replacement services, and in many cases additional coverage for instances of accidental damage or theft and loss, depending on the country and type of product. Cloud Services The Company\u2019s cloud services store and keep customers\u2019 content up-to-date and availab"
+    },
+    {
+      "evidence_id": "seed:aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "score": 0.4684803789370113,
+      "text": " satisfaction in The U. We saw a sequential acceleration across a majority of the categories, including cloud services where we reached an all time revenue record driven by the year over year growth of iCloud paying accounts. We saw strong momentum during the June, and the growth of our installed base of active devices gives us great opportunities for the future. Customer engagement across our services offerings also continued to grow. Both transacting and paid accounts reached new all time highs, with paid accounts growing double digits year over year. Paid subscriptions also grew double digits. We have well over 1,000,000,000 paid subscriptions across the services on our platform. We continue to improve the quality and breadth of our service offerings, from the new Apple Games app to a continued expansion of tap to pay and Wallet. Turning to enterprise, organizations are continuing to "
+    },
+    {
+      "evidence_id": "seed:aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "score": 0.42068460396397245,
+      "text": "00,000,000 up 8% year over year. This strong business performance led to June records for both net income at $23,400,000,000 and diluted earnings per share of 1.57 which was up 12% year over year. Operating cash flow was also strong at $27,900,000,000 Now I\u2019m going to provide some more details for each of our revenue categories. IPhone revenue was $44,600,000,000 up 13% year over year driven by the iPhone 16 family. As Tim noted, we saw iPhone growth in every geographic segment and double digit growth in many emerging markets. The iPhone active installed base grew to an all time high in total and in every geographic segment, and we reached a June record for upgraders. According to a recent survey from World Panel, formerly of Kantar, iPhone was a top selling model in The U. S, urban China, The U. K, Australia, and Japan during the June. And we continue to see very high levels of customer"
+    },
+    {
+      "evidence_id": "seed:aapl_10k_2024_excerpt:1:9652038aa9",
+      "chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "doc_id": "aapl_10k_2024_excerpt",
+      "source_year": 2024,
+      "score": 0.4092114635032065,
+      "text": "le across multiple Apple devices and Windows personal computers. Digital Content The Company operates various platforms, including the App Store\u00ae, that allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts. The Company also offers digital content through subscription-based services, including Apple Arcade\u00ae, a game subscription service; Apple Fitness+SM, a personalized fitness service; Apple Music\u00ae, which offers users a curated listening experience with on-demand radio stations; Apple News+\u00ae, a subscription news and magazine service; and Apple TV+\u00ae, which offers exclusive original content and live sports. Payment Services The Company offers payment services, including Apple Card\u00ae, a co-branded credit card, and Apple Pay\u00ae, a cashless payment service. PASTE SECTION B (Risk Factors -> pick 2\u20134 risks): The Company\u2019s business"
+    }
+  ],
+  "graph_paths": [
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:0"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "evidence_id": "path:1"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "evidence_id": "path:2"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "evidence_id": "path:3"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:4"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "evidence_id": "path:5"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:4:0b2dde652e",
+      "evidence_id": "path:6"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:7"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "gross margin",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:0:7e24343194",
+      "evidence_id": "path:8"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:9"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:10"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:11"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:12"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:13"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:14"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:15"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:16"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "evidence_id": "path:17"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:18"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "evidence_id": "path:19"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:4:0b2dde652e",
+      "evidence_id": "path:20"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:21"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Segment",
+      "neighbor": "Services",
+      "related_chunk_id": "aapl_10k_2024_excerpt:0:7e24343194",
+      "evidence_id": "path:22"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Company",
+      "neighbor": "Apple",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "evidence_id": "path:23"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Company",
+      "neighbor": "Apple",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:24"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Company",
+      "neighbor": "Apple",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "evidence_id": "path:25"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Company",
+      "neighbor": "Apple",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:26"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "AAPL",
+      "neighbor_type": "Company",
+      "neighbor": "Apple",
+      "related_chunk_id": "aapl_10k_2024_excerpt:0:7e24343194",
+      "evidence_id": "path:27"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:28"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:29"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "paying accounts",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:30"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "paying accounts",
+      "neighbor_type": "Metric",
+      "neighbor": "subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:31"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "paid subscriptions",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:32"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "paid subscriptions",
+      "neighbor_type": "Metric",
+      "neighbor": "subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:33"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "subscriptions",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:34"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "subscriptions",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:35"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "installed base",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:36"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "installed base",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:37"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:38"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:39"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "iCloud",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:40"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "iCloud",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:41"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:42"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:43"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:44"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:45"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "installed base",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:46"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "installed base",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:47"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:48"
+    },
+    {
+      "seed_entity_type": "Metric",
+      "seed_entity": "revenue",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:49"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "iPhone",
+      "neighbor_type": "Metric",
+      "neighbor": "installed base",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:50"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "iPhone",
+      "neighbor_type": "Metric",
+      "neighbor": "installed base",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "evidence_id": "path:51"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "iPhone",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:52"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "iPhone",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "evidence_id": "path:53"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "iPhone",
+      "neighbor_type": "Metric",
+      "neighbor": "revenue",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "evidence_id": "path:54"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple Pay",
+      "neighbor_type": "Product",
+      "neighbor": "Apple TV+",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:55"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple Pay",
+      "neighbor_type": "Product",
+      "neighbor": "Apple Music",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:56"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple TV+",
+      "neighbor_type": "Product",
+      "neighbor": "Apple Pay",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:57"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple TV+",
+      "neighbor_type": "Product",
+      "neighbor": "Apple Music",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:58"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple Music",
+      "neighbor_type": "Product",
+      "neighbor": "Apple Pay",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:59"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "Apple Music",
+      "neighbor_type": "Product",
+      "neighbor": "Apple TV+",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:60"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "App Store",
+      "neighbor_type": "Product",
+      "neighbor": "Apple Pay",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:61"
+    },
+    {
+      "seed_entity_type": "Product",
+      "seed_entity": "App Store",
+      "neighbor_type": "Product",
+      "neighbor": "Apple TV+",
+      "related_chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "evidence_id": "path:62"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:63"
+    },
+    {
+      "seed_entity_type": "Segment",
+      "seed_entity": "Services",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:64"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paying accounts",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:65"
+    },
+    {
+      "seed_entity_type": "Company",
+      "seed_entity": "Apple",
+      "neighbor_type": "Metric",
+      "neighbor": "paid subscriptions",
+      "related_chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "evidence_id": "path:66"
+    }
+  ],
+  "expanded_chunks": [
+    {
+      "evidence_id": "exp:aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "text": " satisfaction in The U. We saw a sequential acceleration across a majority of the categories, including cloud services where we reached an all time revenue record driven by the year over year growth of iCloud paying accounts. We saw strong momentum during the June, and the growth of our installed base of active devices gives us great opportunities for the future. Customer engagement across our services offerings also continued to grow. Both transacting and paid accounts reached new all time highs, with paid accounts growing double digits year over year. Paid subscriptions also grew double digits. We have well over 1,000,000,000 paid subscriptions across the services on our platform. We continue to improve the quality and breadth of our service offerings, from the new Apple Games app to a continued expansion of tap to pay and Wallet. Turning to enterprise, organizations are continuing to "
+    },
+    {
+      "evidence_id": "exp:aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "text": "00,000,000 up 8% year over year. This strong business performance led to June records for both net income at $23,400,000,000 and diluted earnings per share of 1.57 which was up 12% year over year. Operating cash flow was also strong at $27,900,000,000 Now I\u2019m going to provide some more details for each of our revenue categories. IPhone revenue was $44,600,000,000 up 13% year over year driven by the iPhone 16 family. As Tim noted, we saw iPhone growth in every geographic segment and double digit growth in many emerging markets. The iPhone active installed base grew to an all time high in total and in every geographic segment, and we reached a June record for upgraders. According to a recent survey from World Panel, formerly of Kantar, iPhone was a top selling model in The U. S, urban China, The U. K, Australia, and Japan during the June. And we continue to see very high levels of customer"
+    },
+    {
+      "evidence_id": "exp:aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "text": "SOURCE: Earnings call transcript (secondary source) URL: https://www.investing.com/news/transcripts/earnings-call-transcript-apple-beats-q3-2025-forecasts-stock-dips-93CH-4164767 GOAL: Capture management commentary on Services growth drivers. PASTE SECTION A (Services highlights): Services revenue was $27,400,000,000 up 13% year over year and an all time record. We saw strength across the world with double digit growth in the majority of our markets. Company gross margin was 46.5%, at the high end of our guidance range and down 60 basis points sequentially, primarily driven by approximately $800,000,000 in tariff related costs Tim mentioned earlier. Products gross margin was 34.5%, down 140 basis points sequentially, driven by mix and tariff related costs, partly offset by cost savings. Services gross margin was 75.6%, down 10 basis points sequentially. Operating expenses landed at $15,5"
+    },
+    {
+      "evidence_id": "exp:aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "chunk_id": "aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "doc_id": "aapl_q3_2025_transcript_excerpt",
+      "source_year": 2025,
+      "text": "invest in Apple products to drive employee innovation and productivity. With companies like PayPal and Roche deploying more Macs for their workforce, we had the best June ever for Mac and Enterprise. In Thailand, Siam Commercial Bank, one of the largest Thai banks, has deployed thousands of iPads across their branches to enhance the quality and efficiency of their banking operations from loan services to wealth management."
+    },
+    {
+      "evidence_id": "exp:aapl_10k_2024_excerpt:4:0b2dde652e",
+      "chunk_id": "aapl_10k_2024_excerpt:4:0b2dde652e",
+      "doc_id": "aapl_10k_2024_excerpt",
+      "source_year": 2024,
+      "text": " Adverse macroeconomic conditions, including slow growth or recession, high unemployment, inflation, tighter credit, higher interest rates, and currency fluctuations, can adversely impact consumer confidence and spending and materially adversely affect demand for the Company\u2019s products and services. In addition, consumer confidence and spending can be materially adversely affected in response to changes in fiscal and monetary policy, financial market volatility, declines in income or asset values, and other economic factors. In addition to an adverse impact on demand for the Company\u2019s products and services, uncertainty about, or a decline in, global or regional economic conditions can have a significant impact on the Company\u2019s suppliers, contract manufacturers, logistics providers, distributors, cellular network carriers and other channel partners, and developers. Potential outcomes incl"
+    },
+    {
+      "evidence_id": "exp:aapl_10k_2024_excerpt:1:9652038aa9",
+      "chunk_id": "aapl_10k_2024_excerpt:1:9652038aa9",
+      "doc_id": "aapl_10k_2024_excerpt",
+      "source_year": 2024,
+      "text": "le across multiple Apple devices and Windows personal computers. Digital Content The Company operates various platforms, including the App Store\u00ae, that allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts. The Company also offers digital content through subscription-based services, including Apple Arcade\u00ae, a game subscription service; Apple Fitness+SM, a personalized fitness service; Apple Music\u00ae, which offers users a curated listening experience with on-demand radio stations; Apple News+\u00ae, a subscription news and magazine service; and Apple TV+\u00ae, which offers exclusive original content and live sports. Payment Services The Company offers payment services, including Apple Card\u00ae, a co-branded credit card, and Apple Pay\u00ae, a cashless payment service. PASTE SECTION B (Risk Factors -> pick 2\u20134 risks): The Company\u2019s business"
+    },
+    {
+      "evidence_id": "exp:aapl_10k_2024_excerpt:0:7e24343194",
+      "chunk_id": "aapl_10k_2024_excerpt:0:7e24343194",
+      "doc_id": "aapl_10k_2024_excerpt",
+      "source_year": 2024,
+      "text": "SOURCE: SEC EDGAR Apple Inc. Form 10-K (FY ended 2024-09-28) URL: https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm GOAL: Provide internal evidence about Services + key risks. PASTE SECTION A (Business -> Services): Services Advertising The Company\u2019s advertising services include third-party licensing arrangements and the Company\u2019s own advertising platforms. AppleCare The Company offers a portfolio of fee-based service and support products under the AppleCare\u00ae brand. The offerings provide priority access to Apple technical support, access to the global Apple authorized service network for repair and replacement services, and in many cases additional coverage for instances of accidental damage or theft and loss, depending on the country and type of product. Cloud Services The Company\u2019s cloud services store and keep customers\u2019 content up-to-date and availab"
+    }
+  ],
+  "provenance": {
+    "vector_db": "qdrant(local_path)",
+    "qdrant_path": "artifacts/qdrant_local",
+    "collection": "filings_chunks",
+    "graph_db": "neo4j",
+    "neo4j_uri": "bolt://localhost:7687",
+    "mapping_path": "artifacts/chunkid_to_pointid.json",
+    "top_k": 5,
+    "hop_k": 2,
+    "seed_chunk_ids": [
+      "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "aapl_10k_2024_excerpt:0:7e24343194",
+      "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "aapl_10k_2024_excerpt:1:9652038aa9"
+    ],
+    "expanded_chunk_ids": [
+      "aapl_q3_2025_transcript_excerpt:2:6b389f77d9",
+      "aapl_q3_2025_transcript_excerpt:1:e094ecbb49",
+      "aapl_q3_2025_transcript_excerpt:0:4296fbaf45",
+      "aapl_q3_2025_transcript_excerpt:3:64fbcf8f3b",
+      "aapl_10k_2024_excerpt:4:0b2dde652e",
+      "aapl_10k_2024_excerpt:1:9652038aa9",
+      "aapl_10k_2024_excerpt:0:7e24343194"
+    ],
+    "doc_years": {
+      "aapl_q3_2025_transcript_excerpt": 2025,
+      "aapl_10k_2024_excerpt": 2024
+    }
+  }
+}
