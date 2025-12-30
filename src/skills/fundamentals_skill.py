@@ -110,6 +110,7 @@ def fundamentals_skill(
                 [
                     f"Chunk {i+1} (ID: {c.get('evidence_id')}): {c.get('text', '')}"
                     for i, c in enumerate(seed_chunks)
+                    if isinstance(c, dict) # EXTRA SAFETY
                 ]
             )
 
@@ -180,7 +181,7 @@ Context chunks:
 
             # Safety fallback: if model didn't cite, attach all ids (keeps verifier passing but still exposes weakness)
             if drivers:
-                provided_ids = [c.get("evidence_id") for c in seed_chunks]
+                provided_ids = [c.get("evidence_id") for c in seed_chunks if isinstance(c, dict)]
                 for d in drivers:
                     if not d.get("evidence_ids"):
                         d["evidence_ids"] = provided_ids
@@ -196,11 +197,13 @@ Context chunks:
         drivers = [
             {"text": c.get("text", "")[:220], "evidence_ids": [c.get("evidence_id")]}
             for c in seed_chunks
+            if isinstance(c, dict)
         ]
 
     related_evidence = [
         {"text": c.get("text", "")[:220], "evidence_ids": [c.get("evidence_id")]}
         for c in ep.get("expanded_chunks", [])[:3]
+        if isinstance(c, dict)
     ]
 
     return {
