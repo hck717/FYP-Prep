@@ -69,7 +69,10 @@ def executor(
             results["fundamentals"] = out
 
         elif step.skill == "valuation":
-            out = valuation_skill(ticker, sql_tool, graphrag_cfg)
+            # Pass the already-computed fundamentals data into valuation
+            # so it can access TTM metrics and extracted guidance
+            fund_data = results.get("fundamentals")
+            out = valuation_skill(ticker, sql_tool, graphrag_cfg, fundamentals_data=fund_data)
             results["valuation"] = out
 
     return results
@@ -252,8 +255,8 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
     if last_close is not None:
         md += f"- Last close: {_fmt_num(last_close, 2)}\n"
     if base_iv is not None and upside is not None:
-        md += f"- Implied value (base): {_fmt_num(base_iv, 2)} (implied upside: {_fmt_pct(upside)})\n"
-    md += "- Note: Valuation here is a POC-level P/E proxy; replace with full comps/DCF for production.\n\n"
+        md += f"- Implied value (base DCF): {_fmt_num(base_iv, 2)} (implied upside: {_fmt_pct(upside)})\n"
+    md += "- Note: Valuation now uses a 2-Stage DCF model based on TTM Free Cash Flow.\n\n"
 
     # --- Fundamentals ---
     md += "## Business & Fundamentals\n\n"
@@ -268,7 +271,7 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
         md += "| Metric | " + " | ".join(periods[:4]) + " |\n"
         md += "|---| " + " | ".join(["---"] * len(periods[:4])) + " |\n"
 
-        items = ["Total Revenue", "Net Income", "Diluted EPS"]
+        items = ["Total Revenue", "Net Income", "Diluted EPS", "Free Cash Flow"]
         for item in items:
             row_vals: List[str] = []
             for p in periods[:4]:
@@ -286,6 +289,17 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
             # Link to anchor in Appendix
             linked_labels = [f"[{lbl}](#sql-{lbl.lower()})" for lbl in labels]
             md += f"\n*Data source: Internal DB [{', '.join(linked_labels)}]*\n\n"
+    
+    # --- Advanced Fundamentals Metrics (New Section) ---
+    metrics = fund.get("computed_metrics", {}) if isinstance(fund.get("computed_metrics"), dict) else {}
+    margins = metrics.get("margins", {})
+    growth = metrics.get("growth", {})
+    
+    md += "### Key Performance Metrics (TTM/YoY)\n"
+    md += f"- **Net Margin (TTM)**: {_fmt_pct(margins.get('net_margin'))}\n"
+    md += f"- **FCF Margin (TTM)**: {_fmt_pct(margins.get('fcf_margin'))}\n"
+    md += f"- **Revenue Growth (YoY)**: {_fmt_pct(growth.get('revenue_yoy'))}\n"
+    md += f"- **EPS Growth (YoY)**: {_fmt_pct(growth.get('eps_yoy'))}\n\n"
 
     md += "### Key Growth Drivers\n"
     drivers = fund.get("drivers", []) if isinstance(fund.get("drivers", []), list) else []
@@ -310,17 +324,18 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
     # --- Valuation ---
     md += "## Valuation\n\n"
 
-    md += "### Inputs\n"
+    md += "### Inputs (DCF Model)\n"
     inp_sql_ids = inputs.get("sql_evidence_ids", []) if isinstance(inputs.get("sql_evidence_ids", []), list) else []
     inp_sql_labels = [f"[{sql_map.get(s, s)}](#sql-{sql_map.get(s,s).lower()})" for s in inp_sql_ids]
     
     md += f"- Last close: {_fmt_num(last_close, 2)}\n"
-    md += f"- EPS proxy (annualized): {_fmt_num(inputs.get('eps_ttm_proxy'), 2)}\n"
+    md += f"- Shares Outstanding (Proxy): {_fmt_num(inputs.get('shares_outstanding_proxy'), 2)}\n"
+    md += f"- TTM Free Cash Flow: {_fmt_num(inputs.get('fcf_ttm'), 2)}\n"
     if inp_sql_labels:
         md += f"- Evidence: {', '.join(inp_sql_labels)}\n"
     md += "\n"
 
-    md += "### Implied Valuation (P/E proxy)\n"
+    md += "### Implied Valuation (DCF Range)\n"
     md += "| Scenario | Implied value | Upside vs. last close |\n"
     md += "|---|---:|---:|\n"
 
@@ -333,9 +348,25 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
             return None
 
     low_v, base_v, high_v = v_range.get("low"), v_range.get("base"), v_range.get("high")
-    md += f"| Low | {_fmt_num(low_v, 2)} | {_fmt_pct(_up(low_v))} |\n"
+    md += f"| Bear | {_fmt_num(low_v, 2)} | {_fmt_pct(_up(low_v))} |\n"
     md += f"| Base | {_fmt_num(base_v, 2)} | {_fmt_pct(_up(base_v))} |\n"
-    md += f"| High | {_fmt_num(high_v, 2)} | {_fmt_pct(_up(high_v))} |\n\n"
+    md += f"| Bull | {_fmt_num(high_v, 2)} | {_fmt_pct(_up(high_v))} |\n\n"
+    
+    # Sensitivity Matrix
+    sens_matrix = val.get("sensitivity_matrix", [])
+    if sens_matrix:
+        md += "### DCF Sensitivity (WACC vs Growth)\n"
+        # Get dynamic headers (growth rates)
+        if len(sens_matrix) > 0:
+            keys = [k for k in sens_matrix[0].keys() if k != "wacc"]
+            headers = [f"g={k.split('_')[1]}" for k in keys]
+            md += f"| WACC | {' | '.join(headers)} |\n"
+            md += f"|---|{'---|' * len(headers)}\n"
+            for row in sens_matrix:
+                wacc_val = row.get("wacc")
+                vals = [f"{_fmt_num(row.get(k), 2)}" for k in keys]
+                md += f"| {wacc_val:.1%} | {' | '.join(vals)} |\n"
+        md += "\n"
 
     assumps = val.get("assumptions", []) if isinstance(val.get("assumptions", []), list) else []
     if assumps:
