@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -195,6 +196,31 @@ def _recommendation_from_valuation(last_close: Any, base_value: Any, threshold: 
         return "Hold", None
 
 
+def _extract_source_name(eid: str) -> str:
+    """Attempt to parse a readable source name from the evidence ID."""
+    # Pattern: seed:doc_id:chunk_idx:hash -> doc_id
+    # Pattern: sql:hash:timestamp -> Internal DB (timestamp)
+    if eid.startswith("seed:") or eid.startswith("exp:"):
+        parts = eid.split(":")
+        if len(parts) >= 2:
+            # Extract doc_id (e.g., aapl_q3_2025_transcript_excerpt)
+            raw_doc = parts[1]
+            # Make it cleaner: replace underscores, title case
+            clean_doc = raw_doc.replace("_", " ").title()
+            # If we have a chunk index, append it
+            if len(parts) >= 3 and parts[2].isdigit():
+                return f"{clean_doc} (Chunk {parts[2]})"
+            return clean_doc
+    elif eid.startswith("sql:"):
+        return "Internal Financial DB"
+    
+    return "Unknown Source"
+
+def _extract_link(eid: str) -> Optional[str]:
+    """If the ID implies a linkable source (e.g. EDGAR), return URL. (Mock for now)."""
+    # In a real app, this would look up the doc_id in a metadata table to find the source URL
+    return None
+
 # --- 4. Orchestrator Main ---
 
 def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
@@ -238,6 +264,7 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
 
     if periods:
         md += "### Financial Snapshot (Quarterly)\n"
+        # Fix column headers to be dates only
         md += "| Metric | " + " | ".join(periods[:4]) + " |\n"
         md += "|---| " + " | ".join(["---"] * len(periods[:4])) + " |\n"
 
@@ -256,7 +283,9 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
         raw_sql_ids = summary.get("sql_evidence_ids", []) if isinstance(summary.get("sql_evidence_ids", []), list) else []
         if raw_sql_ids:
             labels = [sql_map.get(s, s) for s in raw_sql_ids]
-            md += f"\n*Data source: Internal DB [{', '.join(labels)}]*\n\n"
+            # Link to anchor in Appendix
+            linked_labels = [f"[{lbl}](#sql-{lbl.lower()})" for lbl in labels]
+            md += f"\n*Data source: Internal DB [{', '.join(linked_labels)}]*\n\n"
 
     md += "### Key Growth Drivers\n"
     drivers = fund.get("drivers", []) if isinstance(fund.get("drivers", []), list) else []
@@ -269,7 +298,8 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
                 continue
             txt = (d.get("text", "") or "").strip()
             ev_ids = d.get("evidence_ids", []) or []
-            ev_labels = [text_map.get(e, e) for e in ev_ids if isinstance(e, str)]
+            # Link to anchor in Appendix
+            ev_labels = [f"[{text_map.get(e, e)}](#text-{text_map.get(e,e).lower()})" for e in ev_ids if isinstance(e, str)]
             quality = d.get("evidence_quality", "-") or "-"
             disconfirm = (d.get("disconfirming_check", "-") or "-").strip()
             md += f"| {i} | {txt} | {', '.join(ev_labels) if ev_labels else '-'} | {quality} | {disconfirm} |\n"
@@ -282,7 +312,8 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
 
     md += "### Inputs\n"
     inp_sql_ids = inputs.get("sql_evidence_ids", []) if isinstance(inputs.get("sql_evidence_ids", []), list) else []
-    inp_sql_labels = [sql_map.get(s, s) for s in inp_sql_ids]
+    inp_sql_labels = [f"[{sql_map.get(s, s)}](#sql-{sql_map.get(s,s).lower()})" for s in inp_sql_ids]
+    
     md += f"- Last close: {_fmt_num(last_close, 2)}\n"
     md += f"- EPS proxy (annualized): {_fmt_num(inputs.get('eps_ttm_proxy'), 2)}\n"
     if inp_sql_labels:
@@ -317,7 +348,7 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
             name = a.get("name", "-")
             value = a.get("value")
             ev_ids = a.get("evidence_ids", []) or []
-            ev_labels = [text_map.get(e, e) for e in ev_ids if isinstance(e, str)]
+            ev_labels = [f"[{text_map.get(e, e)}](#text-{text_map.get(e,e).lower()})" for e in ev_ids if isinstance(e, str)]
             md += f"| {name} | {value} | {', '.join(ev_labels) if ev_labels else '-'} |\n"
         md += "\n"
 
@@ -336,7 +367,7 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
         top = [d for d in drivers if isinstance(d, dict) and (d.get("text") or "").strip()][:2]
         for d in top:
             ev_ids = d.get("evidence_ids", []) or []
-            ev_labels = [text_map.get(e, e) for e in ev_ids if isinstance(e, str)]
+            ev_labels = [f"[{text_map.get(e, e)}](#text-{text_map.get(e,e).lower()})" for e in ev_ids if isinstance(e, str)]
             md += f"- {d.get('text','').strip()} ({', '.join(ev_labels) if ev_labels else 'Uncited'})\n"
     else:
         md += "- Fundamentals drivers not available; defaulting to neutral stance.\n"
@@ -360,17 +391,20 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
 
     # --- Evidence appendix ---
     md += "\n## Evidence Appendix\n"
-    md += "### Text evidence IDs\n"
+    md += "### Text Evidence\n"
     if text_map:
         for eid, lbl in text_map.items():
-            md += f"- {lbl}: `{eid}`\n"
+            source_name = _extract_source_name(eid)
+            # Create an anchor for each item
+            md += f"- <a id='text-{lbl.lower()}'></a>**{lbl}**: {source_name} (`{eid}`)\n"
     else:
         md += "- (None)\n"
 
-    md += "\n### SQL evidence IDs\n"
+    md += "\n### SQL Evidence\n"
     if sql_map:
         for sid, lbl in sql_map.items():
-            md += f"- {lbl}: `{sid}`\n"
+            source_name = _extract_source_name(sid)
+            md += f"- <a id='sql-{lbl.lower()}'></a>**{lbl}**: {source_name} (`{sid}`)\n"
     else:
         md += "- (None)\n"
 
