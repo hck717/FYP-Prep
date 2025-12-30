@@ -203,8 +203,12 @@ def _extract_source_name(eid: str) -> str:
     """Attempt to parse a readable source name from the evidence ID."""
     # Pattern: seed:doc_id:chunk_idx:hash -> doc_id
     # Pattern: sql:hash:timestamp -> Internal DB (timestamp)
-    if eid.startswith("seed:") or eid.startswith("exp:"):
-        parts = eid.split(":")
+    
+    # Handle brackets or quotes around ID if they exist (common with some extractors)
+    clean_eid = eid.strip("[]'\"")
+    
+    if clean_eid.startswith("seed:") or clean_eid.startswith("exp:"):
+        parts = clean_eid.split(":")
         if len(parts) >= 2:
             # Extract doc_id (e.g., aapl_q3_2025_transcript_excerpt)
             raw_doc = parts[1]
@@ -214,7 +218,7 @@ def _extract_source_name(eid: str) -> str:
             if len(parts) >= 3 and parts[2].isdigit():
                 return f"{clean_doc} (Chunk {parts[2]})"
             return clean_doc
-    elif eid.startswith("sql:"):
+    elif clean_eid.startswith("sql:"):
         return "Internal Financial DB"
     
     return "Unknown Source"
