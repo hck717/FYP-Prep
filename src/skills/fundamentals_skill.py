@@ -62,9 +62,8 @@ def fundamentals_skill(
     periods_res = sql_tool.read_query(
         f"""
         SELECT DISTINCT period_end
-        FROM fundamentals
+        FROM fundamentals_quarterly
         WHERE ticker='{ticker}'
-          AND period_type='quarterly'
         ORDER BY period_end DESC
         LIMIT 8
     """
@@ -74,9 +73,8 @@ def fundamentals_skill(
     items_res = sql_tool.read_query(
         f"""
         SELECT period_end, line_item, value, ingested_at
-        FROM fundamentals
+        FROM fundamentals_quarterly
         WHERE ticker='{ticker}'
-        AND period_type='quarterly'
         AND line_item IN ('Total Revenue','Net Income','Diluted EPS','Basic EPS','Free Cash Flow')
         ORDER BY period_end DESC
         LIMIT 200
