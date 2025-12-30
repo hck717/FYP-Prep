@@ -27,8 +27,6 @@ def fundamentals_skill(
     periods = [r[0] for r in periods_res.rows]  # one column: period_end
 
     wanted = ["Total Revenue", "Net Income", "Diluted EPS", "Basic EPS", "Free Cash Flow"]
-    # periods_in = ", ".join([f"'{p}'" for p in periods]) # Unused
-    # items_in = ", ".join([f"'{x}'" for x in wanted])   # Unused
 
     items_res = sql_tool.read_query(f"""
         SELECT period_end, line_item, value, ingested_at
@@ -67,15 +65,34 @@ def fundamentals_skill(
             
             context_str = "\n\n".join([f"Chunk {i+1} (ID: {c['evidence_id']}): {c['text']}" for i, c in enumerate(seed_chunks)])
             
-            prompt = f"""
-            Based on the following text chunks from {ticker}'s filings, identify 3-5 key growth drivers.
-            Return ONLY a bulleted list of drivers. Do not include introductory text.
+            # --- PROFESSIONAL PROMPT ---
+            system_msg = {
+                "role": "system", 
+                "content": (
+                    "You are a Senior Equity Research Analyst at a top-tier investment bank. "
+                    "Your job is to synthesize raw filing excerpts into professional, concise investment insights. "
+                    "Focus on identifying structural growth drivers, margin implications, and strategic shifts. "
+                    "Avoid generic summary language; use financial terminology (e.g., 'operating leverage', 'ARR growth', 'cyclical headwinds')."
+                )
+            }
             
-            Context:
-            {context_str}
-            """
+            user_msg = {
+                "role": "user",
+                "content": f"""
+                Based ONLY on the provided text chunks from {ticker}'s filings, identify 3-5 key growth drivers or strategic priorities.
+                
+                Guidelines:
+                - Output ONLY a bulleted list.
+                - Each bullet must be self-contained and high-impact.
+                - Highlight specific segments, products, or geographies mentioned in the text.
+                - If the text mentions risks or headwinds, frame them professionally as 'Key Risks'.
+                
+                Context:
+                {context_str}
+                """
+            }
             
-            resp = call_perplexity(api_key, [{"role": "user", "content": prompt}])
+            resp = call_perplexity(api_key, [system_msg, user_msg])
             
             # Parse lines
             driver_lines = [line.strip().lstrip("- ").lstrip("* ") for line in resp.split("\n") if line.strip()]
