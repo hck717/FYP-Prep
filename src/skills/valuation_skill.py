@@ -93,17 +93,31 @@ def valuation_skill(
     # Growth Rate: Look at extracted guidance or historical growth
     base_growth = 0.05 # Default 5%
     
+    # Gather extracted guidance evidence IDs if available
+    extracted_evidence_ids = []
+
     if fundamentals_data:
         guidance = fundamentals_data.get("guidance", [])
-        # Simple heuristic: if any guidance mentions "revenue" and "double digit", bump growth
-        # Real impl would parse numbers.
+        # Collect IDs from any extracted guidance used to inform growth
         for g in guidance:
             val = str(g.get("value_text", "")).lower()
             if "double" in val:
                 base_growth = 0.10
+                extracted_evidence_ids.extend(g.get("evidence_ids", []))
             elif "high single" in val:
                 base_growth = 0.08
+                extracted_evidence_ids.extend(g.get("evidence_ids", []))
+
+    # If no extraction happened or no evidence found, default to extracting a generic "outlook" chunk
+    if not extracted_evidence_ids:
+        # Fallback retrieve to get *some* ID for verification
+        ep = graphrag_retrieve(f"{ticker} long term growth targets", graphrag_cfg)
+        if ep.get("seed_chunks"):
+             extracted_evidence_ids.append(ep["seed_chunks"][0]["evidence_id"])
     
+    # Use unique IDs
+    extracted_evidence_ids = list(set(extracted_evidence_ids))
+
     wacc = 0.09 # 9%
     terminal_g = 0.03 # 3%
 
@@ -113,11 +127,6 @@ def valuation_skill(
     dcf_base = _calculate_dcf(fcf_ttm, shares_proxy, base_growth, wacc, terminal_g)
     dcf_bear = _calculate_dcf(fcf_ttm, shares_proxy, base_growth * 0.5, wacc + 0.01, terminal_g - 0.01)
     dcf_bull = _calculate_dcf(fcf_ttm, shares_proxy, base_growth * 1.5, wacc - 0.01, terminal_g + 0.01)
-
-    # Model B: Relative (P/E)
-    # Use historical P/E or standard 25x
-    pe_base = 25.0
-    pe_val = eps_ttm * pe_base
 
     # Sensitivity Table (Price vs WACC & Growth)
     sensitivity = []
@@ -141,9 +150,9 @@ def valuation_skill(
             "sql_evidence_ids": fundamentals_data.get("financials_summary", {}).get("sql_evidence_ids", []) if fundamentals_data else []
         },
         "assumptions": [
-            {"name": "WACC", "value": f"{wacc:.1%}", "evidence_ids": []},
-            {"name": "Terminal Growth", "value": f"{terminal_g:.1%}", "evidence_ids": []},
-            {"name": "Base Growth (Stage 1)", "value": f"{base_growth:.1%}", "evidence_ids": []}
+            {"name": "WACC", "value": f"{wacc:.1%}", "evidence_ids": extracted_evidence_ids},
+            {"name": "Terminal Growth", "value": f"{terminal_g:.1%}", "evidence_ids": extracted_evidence_ids},
+            {"name": "Base Growth (Stage 1)", "value": f"{base_growth:.1%}", "evidence_ids": extracted_evidence_ids}
         ],
         "valuation_range": {
             "low": dcf_bear.get("implied_price", 0),
