@@ -1,7 +1,33 @@
-
 # FYP-Prep: Agentic Equity Research with MCP & GraphRAG
 
 This project implements an Agentic RAG system for Equity Research (ER). It uses **Model Context Protocol (MCP)** to securely access internal financial data (SQLite) and **GraphRAG** (Neo4j + Qdrant) to retrieve structural text evidence. A central **Orchestrator** plans, executes, and verifies the research note generation.
+
+## 🧠 How It Works (Architecture)
+
+This system mimics the workflow of a professional human analyst but automates the data gathering and synthesis steps. It operates in three distinct layers:
+
+### 1. The "Analyst Brain" (Orchestrator & LLM)
+- **Role**: Plans the research note structure and synthesizes insights.
+- **Technology**: 
+  - **Perplexity API** (Cloud): Acts as the senior analyst brain. We use "Role Prompting" to give it a Wall Street persona (e.g., "You are a Senior Equity Research Analyst"). It takes raw facts and writes the professional narrative.
+  - **Orchestrator** (Local Python): The project manager. It breaks the user request into tasks (e.g., "Get Fundamentals", "Get Valuation"), calls the right tools, and ensures the job gets done.
+
+### 2. The "Fact Checkers" (Data Plane)
+We strictly separate **Numbers** from **Text** to prevent "hallucinations" (AI making up numbers).
+- **Financials (MCP SQLite)**: 
+  - Uses the **Model Context Protocol (MCP)** to query a local SQLite database (`research.db`). 
+  - This ensures that when the agent asks for "Apple's 2023 Revenue," it gets the exact database value, not a guess.
+- **Text Evidence (GraphRAG)**:
+  - Uses **Qdrant** (Vector Search) to find relevant paragraphs in 10-K filings.
+  - Uses **Neo4j** (Graph Database) to find hidden connections (e.g., "Supplier Relationship" or "Risk Factors").
+  - Returns "Evidence Packs" containing raw text chunks and their unique IDs.
+
+### 3. The "Verifier" (Quality Control)
+- Before showing you the report, the system runs a **Verification Step**.
+- It checks that every claim in the final text cites a specific **Evidence ID** (e.g., `[Ids: chunk_123]`).
+- If the AI writes something without a source, the Verifier flags it.
+
+---
 
 ## Prerequisites
 
