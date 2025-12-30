@@ -1,4 +1,3 @@
-
 import json
 import logging
 from dataclasses import dataclass
@@ -46,7 +45,8 @@ def executor(
     ticker: str,
     plan: List[PlanSection],
     sql_tool: McpSqliteReadOnlyTool,
-    graphrag_cfg: RetrieveConfig
+    graphrag_cfg: RetrieveConfig,
+    api_key: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Executes the plan by calling the respective skills.
@@ -58,10 +58,12 @@ def executor(
         print(f"Executing step: {step.title} using {step.skill}")
         
         if step.skill == "fundamentals":
-            out = fundamentals_skill(ticker, sql_tool, graphrag_cfg, focus=step.focus or "general")
+            # Pass api_key to support Perplexity-based synthesis
+            out = fundamentals_skill(ticker, sql_tool, graphrag_cfg, focus=step.focus or "general", api_key=api_key)
             results["fundamentals"] = out
         
         elif step.skill == "valuation":
+            # Valuation skill not yet updated to use LLM, but we could pass it if we wanted
             out = valuation_skill(ticker, sql_tool, graphrag_cfg)
             results["valuation"] = out
 
@@ -199,14 +201,15 @@ def generate_markdown(ticker: str, data: Dict[str, Any]) -> str:
 def run_orchestrator(
     ticker: str,
     sql_tool: McpSqliteReadOnlyTool,
-    graphrag_cfg: RetrieveConfig
+    graphrag_cfg: RetrieveConfig,
+    api_key: Optional[str] = None
 ) -> OrchestratorResult:
     
     # 1. Plan
     plan = planner_lite(ticker)
     
     # 2. Execute
-    data = executor(ticker, plan, sql_tool, graphrag_cfg)
+    data = executor(ticker, plan, sql_tool, graphrag_cfg, api_key=api_key)
     
     # 3. Verify
     verification = verifier(data)
