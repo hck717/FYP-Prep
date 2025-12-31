@@ -8,7 +8,7 @@ It leverages **Model Context Protocol (MCP)** for secure access to structured fi
 
 ## 🧠 System Architecture
 
-The system is designed as a modular **Agentic Orchestrator** that manages two specialized skills, powered by distinct data pipelines.
+The system is designed as a modular **Agentic Orchestrator** that manages specialized "Agent Skills", powered by distinct data pipelines.
 
 ### 1. The Orchestrator (The "Analyst Brain")
 - **Role**: Project Manager & Editor.
@@ -19,15 +19,14 @@ The system is designed as a modular **Agentic Orchestrator** that manages two sp
   - **Verifies** quality (checks that every claim cites valid Evidence IDs).
   - **Synthesizes** final output using **Perplexity API** with a "Senior Analyst" persona.
 
-### 2. The Skills (The "Specialists")
-The Orchestrator calls these Python modules to perform domain-specific work:
-- **Skill A: Fundamentals**: 
+### 2. The Agent Skills (The "Specialists")
+Based on the **Anthropic Agent Skills** standard, these are self-contained modules located in `skills/`.
+- **Fundamentals Skill** (`skills/fundamentals/`): 
   - *Task:* Analyze growth drivers, revenue mix, and risks.
   - *Logic:* Triangulates quantitative trends (SQL) with qualitative context (Text).
-  - *Advanced:* Uses "Chain-of-Thought" prompting to perform sanity checks (e.g., "Do numbers match the narrative?").
-- **Skill B: Valuation**:
-  - *Task:* Construct valuation ranges (Base/Bear/Bull).
-  - *Logic:* Pulls latest price/EPS data and applies multiple valuation methods (PE, DCF proxy).
+- **Valuation Skill** (`skills/valuation/`):
+  - *Task:* Construct valuation ranges (Base/Bear/Bull) and sensitivity matrices.
+  - *Logic:* Pulls latest price/EPS data and applies DCF/multiple models.
 
 ### 3. The Data Plane (The "Fact Checkers")
 We strictly separate **Structured** vs. **Unstructured** data to eliminate hallucinations.
@@ -99,7 +98,7 @@ Ensure your SQLite database exists and has tables:
 ```bash
 ls -lh research.db
 sqlite3 research.db ".tables"
-# Expected: events, fundamentals, prices_daily, ratios_ttm, ...
+# Expected: events, fundamentals_quarterly, prices_daily, ratios_ttm, ...
 ```
 
 ### Start MCP Server
@@ -153,12 +152,24 @@ python src/graphrag/retrieve.py --query "Apple services growth drivers"
 
 ## 4. Control Plane: Agentic Skills
 
-### Test Skills (Fundamentals & Valuation)
-Run the isolated skills to ensure they produce valid JSON with evidence IDs.
+This project uses the **Agent Skills** architecture. Each skill is a self-contained unit located in `skills/` with its own `SKILL.md` metadata and executable script.
+
+### Test Skills Manually
+You can test each skill directly from the command line to verify logic and output format.
+
+**Fundamentals Analysis Skill:**
 ```bash
 source .venv/bin/activate
-python -m src.scripts.step4_run_skills_poc
+python skills/fundamentals/run_analysis.py --ticker AAPL --focus "services revenue"
 ```
+
+**Valuation Analysis Skill:**
+```bash
+source .venv/bin/activate
+python skills/valuation/run_valuation.py --ticker MSFT --horizon "18 months"
+```
+
+For more details on creating and using skills, see [`skills/README.md`](skills/README.md).
 
 ### Refine "Senior Analyst" Behavior
 To improve the quality of insights, you can save good outputs as "exemplars." The system will use these to fine-tune its future responses via few-shot prompting.
@@ -182,9 +193,11 @@ Access the app at `http://localhost:8501`.
 ---
 
 ## Project Structure
+- `skills/`: Agent Skills (`SKILL.md` + scripts)
+  - `fundamentals/`: Fundamentals analysis logic
+  - `valuation/`: Valuation model logic
 - `src/tools/`: MCP Client wrappers (`sql_tool_mcp.py`)
 - `src/graphrag/`: Retrieval logic (`retrieve.py`)
-- `src/skills/`: Domain logic (`fundamentals.py`, `valuation.py`)
 - `src/orchestrator/`: Agent logic (`agent.py`)
 - `src/llm/`: Perplexity client & Exemplar management
 - `streamlit_app_v2.py`: Main UI entry point
@@ -193,5 +206,6 @@ Access the app at `http://localhost:8501`.
 
 ## Acknowledgements
 
-This architecture is inspired by Neo4j's developer guide on **GraphRAG and Agentic Architecture**.  
-Reference: [GraphRAG and Agentic Architecture with NeoConverse](https://neo4j.com/blog/developer/graphrag-and-agentic-architecture-with-neoconverse/)
+This architecture is inspired by Neo4j's developer guide on **GraphRAG and Agentic Architecture** and **Anthropic's Agent Skills**.  
+- [GraphRAG and Agentic Architecture with NeoConverse](https://neo4j.com/blog/developer/graphrag-and-agentic-architecture-with-neoconverse/)
+- [Anthropic Agent Skills](https://www.anthropic.com/blog/skills)
