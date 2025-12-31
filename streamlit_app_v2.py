@@ -4,7 +4,7 @@ import streamlit as st
 from src.graphrag.retrieve import RetrieveConfig
 from src.orchestrator.agent import run_orchestrator
 from src.tools.sql_tool_mcp import McpSqliteReadOnlyTool
-from src.llm.perplexity_client import call_perplexity  # Added import
+from src.llm.perplexity_client import call_perplexity
 
 st.set_page_config(page_title="FYP-Prep: Agentic ER Note", layout="wide")
 
@@ -33,7 +33,7 @@ with st.sidebar:
 
     if st.button("Reset Session"):
         st.session_state.result = None
-        st.session_state.messages = []  # Clear chat history too
+        st.session_state.messages = []
         st.rerun()
 
 # --- Main Logic ---
@@ -41,7 +41,6 @@ with st.sidebar:
 if "result" not in st.session_state:
     st.session_state.result = None
 
-# Helper to get graph config (used by both main report and chat)
 def get_graph_config():
     return RetrieveConfig(
         qdrant_path=qdrant_path,
@@ -57,12 +56,10 @@ def get_graph_config():
     )
 
 def run_analysis():
-    # 1. Setup Tools
     sql_tool = McpSqliteReadOnlyTool(db_path=db_path)
     graph_cfg = get_graph_config()
     
     with st.spinner(f"Running Agentic Workflow for {ticker}..."):
-        # 2. Run Orchestrator
         try:
             res = run_orchestrator(ticker, sql_tool, graph_cfg, api_key=pplx_api_key)
             st.session_state.result = res
@@ -80,7 +77,6 @@ if st.button("Generate ER Note", type="primary"):
 res = st.session_state.result
 
 if res:
-    # Two columns: Report vs Evidence
     col1, col2 = st.columns([1.2, 1])
     
     with col1:
@@ -111,7 +107,7 @@ if res:
 ]
             """, language="json")
 
-# --- Chat Interface (Appended Below) ---
+# --- Chat Interface ---
 
 st.markdown("---")
 st.subheader("💬 Chat with Analyst")
@@ -120,23 +116,18 @@ st.caption(f"Ask specific questions about **{ticker}**. Examples: 'What is the v
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat Input Processing
 if prompt := st.chat_input(f"Ask a question about {ticker}..."):
-    # 1. Display User Message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # 2. Generate Response
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         
-        # Ensure we have data. If not, run the orchestrator quietly.
         data_source = None
         if st.session_state.result:
             data_source = st.session_state.result.structured_data
@@ -146,15 +137,11 @@ if prompt := st.chat_input(f"Ask a question about {ticker}..."):
                     sql_tool = McpSqliteReadOnlyTool(db_path=db_path)
                     graph_cfg = get_graph_config()
                     res = run_orchestrator(ticker, sql_tool, graph_cfg, api_key=pplx_api_key)
-                    # We DON'T set st.session_state.result here to avoid popping open the main report 
-                    # if the user just wanted to chat. But we use the data.
                     data_source = res.structured_data
                 except Exception as e:
                     st.error(f"Failed to fetch data: {e}")
         
         if data_source:
-            # Construct a context-aware prompt
-            # We extract key fields to keep the prompt focused
             val = data_source.get("valuation", {})
             fund = data_source.get("fundamentals", {})
             
@@ -167,7 +154,7 @@ if prompt := st.chat_input(f"Ask a question about {ticker}..."):
             }, indent=2)
 
             qa_prompt = f"""
-            You are an expert financial analyst. Answer the user's question based ONLY on the provided data context.
+            You are an expert financial analyst. Answer the user's question based on the provided data context AND your general knowledge (if needed for context like product details).
             
             Ticker: {ticker}
             User Question: "{prompt}"
@@ -176,19 +163,28 @@ if prompt := st.chat_input(f"Ask a question about {ticker}..."):
             {context_str}
             
             Guidelines:
-            - If asked for "Price" or "How much", use 'last_close' from dcf_inputs.
-            - If asked for "Valuation", cite the Base Case from valuation_summary.
-            - If asked "Buy/Sell/Hold", compare the Base Case value to the Last Close price.
-            - Keep answer concise (under 4 sentences).
+            - Use clear Markdown formatting (bullet points, bold key numbers).
+            - If you use external information (like product release dates), cite it.
+            - If you use the Data Context, refer to it as "Internal Data".
+            - Be concise.
             """
             
             if pplx_api_key:
                 try:
-                    full_response = call_perplexity(
+                    # Request citations from Perplexity
+                    full_response, citations = call_perplexity(
                         api_key=pplx_api_key, 
                         messages=[{"role": "user", "content": qa_prompt}],
-                        temperature=0.0
+                        temperature=0.0,
+                        return_citations=True
                     )
+                    
+                    # Append citations to the response if they exist
+                    if citations:
+                        full_response += "\n\n**Sources:**\n"
+                        for i, cite in enumerate(citations, 1):
+                            full_response += f"{i}. {cite}\n"
+                            
                 except Exception as e:
                     full_response = f"⚠️ Error calling LLM: {e}"
             else:
