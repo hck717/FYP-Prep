@@ -15,11 +15,15 @@ def call_perplexity(
     api_key: str, 
     messages: List[Dict[str, str]],
     model: str = MODEL_NAME,
-    temperature: float = 0.2
+    temperature: float = 0.0
 ) -> str:
     """
     Call Perplexity API using OpenAI-compatible client.
     Matches the official pattern: client = OpenAI(api_key=..., base_url="https://api.perplexity.ai")
+    
+    Defaults:
+    - model: sonar-pro
+    - temperature: 0.0 (Deterministic output)
     """
     if not api_key:
         raise ValueError("Perplexity API key is required.")
